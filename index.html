@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search Bar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+        }
+        .column {
+            padding: 4rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex-direction: column;
+        }
+        h1 {
+            margin-bottom: 2rem;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+        }
+        input {
+            padding: 10px;
+            font-size: .8rem;
+            margin-bottom: 1rem;
+        }
+        input:focus {
+            outline: none;
+        }
+        button {
+            border: 1px solid #000;
+            background: none;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="column">
+        <h1 id="title">Search for your favorite movie character!</h1>
+        <input id="search-input" type="text" placeholder="enter name..." name="name">
+        <button id="search-btn">Search Character</button>
+        <button id="all-characters-btn">View All Character</button>
+        <p id="search-display"></p>
+        
+    </div>
+    <form class="column">
+        <h1 id="title">Add your favorite movie character!</h1>
+        <input id="name-input" type="text" placeholder="enter actor name..." name="name">
+        <input id="role-input" type="text" placeholder="enter role name..." name="role">
+        <input id="force-input" type="text" placeholder="enter movie name..." name="movie name">
+        <button id="add-btn">Add Character</button>
+        <p id="submission-status"></p>
+    </form>
+
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+    <script>
+        const searchBtn = $("#search-btn");
+        const addBtn = $("#add-btn");
+        const searchInput = $("#search-input");
+        const nameInput = $("#name-input");
+        const roleInput = $("#role-input");
+        const forceInput = $("#force-input");
+        const searchDisplay = $("#search-display");
+        const submissionStatus = $("#submission-status");
+        const viewAllBtn = $("#all-characters-btn");
+    
+        searchBtn.on("click", ()=>{
+            let characterName = searchInput.val().toLowerCase();
+            
+            URL = `http://localhost:8080/api/${characterName}`;
+            searchInput.val("");
+
+            $.get(URL, (data)=>{
+                searchDisplay.text(JSON.stringify(data));
+            });
+
+        })
+
+        viewAllBtn.on("click", ()=>{
+            $.get(`http://localhost:8080/api`, (data)=>{
+                let allCharString = "";
+                for (let i = 0; i < data.length; i++) {
+                   allCharString += `Name: ${data[i].name}\nActor: ${data[i].actor}\nMovie Name: ${data[i].movieName}\n\n`; 
+                }
+                searchDisplay.text(allCharString);
+            })
+        })
+
+        addBtn.on("click", (event)=>{
+            event.preventDefault();
+            let postData = {
+                name : nameInput.val().toLowerCase(),
+                actor : roleInput.val().toLowerCase(),
+                movieName : forceInput.val().toLowerCase()
+            }
+            $.post("http://localhost:8080/add",postData ,()=>{
+                submissionStatus.text("your character has been added!");
+                nameInput.val("");
+                roleInput.val("");
+                forceInput.val("");
+            })
+        });
+
+    </script>
+    
+</body>
+</html>

@@ -80,7 +80,7 @@
         searchBtn.on("click", ()=>{
             let characterName = searchInput.val().toLowerCase();
             
-            URL = `http://localhost:8080/api/${characterName}`;
+            URL = `/api/${characterName}`;
             searchInput.val("");
 
             $.get(URL, (data)=>{
@@ -90,7 +90,7 @@
         })
 
         viewAllBtn.on("click", ()=>{
-            $.get(`http://localhost:8080/api`, (data)=>{
+            $.get(`/api`, (data)=>{
                 let allCharString = "";
                 for (let i = 0; i < data.length; i++) {
                    allCharString += `Name: ${data[i].name}\nActor: ${data[i].actor}\nMovie Name: ${data[i].movieName}\n\n`; 
@@ -106,7 +106,7 @@
                 actor : roleInput.val().toLowerCase(),
                 movieName : forceInput.val().toLowerCase()
             }
-            $.post("http://localhost:8080/add",postData ,()=>{
+            $.post("/add",postData ,()=>{
                 submissionStatus.text("your character has been added!");
                 nameInput.val("");
                 roleInput.val("");
